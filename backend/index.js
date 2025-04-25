@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
 //utiles
-
 import connetDB from './config/db.js';
+import userRoutes from './routers/userRoutes.js';
 
 //config
 dotenv.config();
@@ -20,7 +20,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get('/api/users', userRoutes);
+// app.post('/', (req, res) => {
+//   res.send('Hello');
+// });
+
+app.use('/api/users', userRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
