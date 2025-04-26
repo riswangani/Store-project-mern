@@ -40,6 +40,9 @@ const createUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  // console.log(email);
+  // console.log(password);
+
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
@@ -47,6 +50,7 @@ const loginUser = asyncHandler(async (req, res) => {
       password,
       existingUser.password
     );
+
     if (isPasswordValid) {
       createToken(res, existingUser._id);
 
@@ -56,10 +60,23 @@ const loginUser = asyncHandler(async (req, res) => {
         email: existingUser.email,
         isAdmin: existingUser.isAdmin,
       });
-
-      return; // exixt the function after sending the response
+      return;
     }
   }
 });
 
-export { createUser, loginUser };
+const logoutCurrentUser = asyncHandler(async (req, res) => {
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json({ message: 'Logged out successfully' });
+});
+
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
+export { createUser, loginUser, logoutCurrentUser, getAllUsers };
